@@ -1,14 +1,17 @@
-const mdx = require("@mdx-js/mdx")
-import { UserConfigSettings } from "../../shiki-twoslash/src"
-import remarkShikiTwoslash from "../src"
+import { UserConfigSettings } from "../../shiki-twoslash/src";
+import remarkShikiTwoslash from "../src";
+const mdx = require("@mdx-js/mdx");
 
-const transpile = async (str: string, opts: UserConfigSettings = { theme: "dark-plus" }) => {
+const transpile = async (
+  str: string,
+  opts: UserConfigSettings = { theme: "dark-plus" }
+) => {
   const jsx = await mdx(str, {
     filepath: "file/path/file.mdx",
-    remarkPlugins: [[remarkShikiTwoslash, opts]],
-  })
-  return jsx
-}
+    remarkPlugins: [[remarkShikiTwoslash, opts]]
+  });
+  return jsx;
+};
 
 it("renders twoslash", async () => {
   const content = `
@@ -17,10 +20,10 @@ it("renders twoslash", async () => {
 \`\`\`ts twoslash
 const a = '123'
 \`\`\`
-  `
-  const res = await transpile(content)
-  expect(res).toContain("shiki dark-plus twoslash lsp")
-})
+  `;
+  const res = await transpile(content);
+  expect(res).toContain("shiki dark-plus twoslash lsp");
+});
 
 it("renders twoslash with settings", async () => {
   const content = `
@@ -29,11 +32,11 @@ it("renders twoslash with settings", async () => {
 \`\`\`ts twoslash
 const a = '123'
 \`\`\`
-  `
+  `;
 
-  const res = await transpile(content)
-  expect(res).toContain("shiki dark-plus twoslash lsp")
-})
+  const res = await transpile(content);
+  expect(res).toContain("shiki dark-plus twoslash lsp");
+});
 
 it("handles includes", async () => {
   const content = `
@@ -53,12 +56,12 @@ OK
 // @include: main
 c.toString()
 \`\`\`
-`
-  const res = await transpile(content)
-  expect(res).toContain("shiki dark-plus twoslash lsp")
+`;
+  const res = await transpile(content);
+  expect(res).toContain("shiki dark-plus twoslash lsp");
 
   // This would bail if the include did not work (because c would not exist in the code sample)
-})
+});
 
 it("rendered multiple copies when requested", async () => {
   const content = `
@@ -67,15 +70,15 @@ it("rendered multiple copies when requested", async () => {
 \`\`\`ts
 const a = 123
 \`\`\`
-`
+`;
   const res = await transpile(content, {
-    themes: ["light-plus", "dark-plus"],
-  })
+    themes: ["light-plus", "dark-plus"]
+  });
 
   // Basically, we expect two copies of the codeblock
-  expect(res.split('"className": "shiki').length).toEqual(3)
+  expect(res.split('"className": "shiki').length).toEqual(3);
 
   // Make sure that it adds the theme name to the classes
-  expect(res).toContain("shiki dark-plus")
+  expect(res).toContain("shiki dark-plus");
   // expect(res).toContain("shiki light-plus twoslash lsp")
-})
+});
